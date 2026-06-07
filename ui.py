@@ -2,9 +2,10 @@
 import sys
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, 
-    QLineEdit, QPushButton, QGridLayout, QVBoxLayout
+    QLineEdit, QPushButton, QGridLayout, QVBoxLayout, QHBoxLayout
 )
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
 
 #part 2
 class LoginWindow(QMainWindow):
@@ -13,109 +14,193 @@ class LoginWindow(QMainWindow):
         self.setWindowTitle("Login")
         self.setMinimumSize(854,480)
         self.showMaximized()
+
 #part 3 canvas styling
         self.main_canvas = QWidget(self)
         self.setCentralWidget(self.main_canvas)
-        self.main_canvas.setStyleSheet("background-color: #f0f0f0)")
+        self.main_canvas.setStyleSheet("background-color: #2b2b2b;")
+
 #part 4 layout isolation and centering
         self.outer_layout = QVBoxLayout(self.main_canvas)#a vertical layout 
-        self.login_card = QWidget()
-        self.login_card.setFixedHeight(300)
-        self.login_card.setFixedWidth(400)
 
+#4.5 main content card (left and right)
+        self.login_card = QWidget()
+        self.login_card.setFixedSize(800,500)
+        
+#global
         self.login_card.setStyleSheet("""
-            QWidget {
-            background-color: #ffffff;
-            border-radius: 8px;
+            QWidget #left_panel {
+            background-color: #3aafa9;
+            border-top-left-radius: 15px;
+            border-radius: 20px;
             }
-                                      
-            QLabel {
-            font-size: 18px;
-            font-weight: bold;
-            borner: none;
-            font-family: Arial, sans-serif;
+            QWidget #right_panel {
+            background-color: #ffffff;
+            border-top-right-radius: 15px;
+            border-radius: 20px;
             }
                                       
             QLineEdit {
-            background-color: #f0f0f0;
+            background-color: #f4f7f6;
             color: #333333;
-            border: 1px solid #cccccc;
-            border-radius: 4px;
-            padding: 6px;
+            border-bottom: 2px solid #cccccc;
+            border-radius: 5px;
+            padding: 8px 4px;
             font-size: 14px;
-            }
+            }                              
                                       
-            QPushButton {
-            background-color: #007acc;
+            QPushButton #action_btn{
+            background-color: #3aafa9;
             color: #ffffff;
             border: none;
-            border-radius: 4px;
-            padding: 10px;
+            border-radius: 20px;
+            padding: 12px 40px;
             font-size: 14px;
             font-weight: bold;
             }
+                                      
             QPushButton:hover {
-            background-color: #005f99;
+            background-color: black;
             }
+                                      
+            QPushButton #ghost_btn{
+            background-color: blue;
+            color: #3aafa9;
+            border: 2px solid #3aafa9;
+            border-radius: 20px;
+            padding: 12px 40px;
+            font-size: 14px;
+            font-weight: bold;    
+            }
+            QPushButton#ghost_btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            }                     
         """)
+
         self.outer_layout.addWidget(self.login_card, alignment=Qt.AlignmentFlag.AlignCenter)
+        
 
-    #part 5 grid matrix
-        #initialize spreadsheet layout matrix
-        self.grid = QGridLayout(self.login_card)
+        #split the card horizontally
+        self.card_layout = QHBoxLayout(self.login_card)
+        self.card_layout.setContentsMargins(0, 0, 0, 0)
+        self.card_layout.setSpacing(0)
 
-        #set padding between card and widgets (left, top, right bottom)
-        self.grid.setContentsMargins(30, 30, 30, 30)
-        #set spacing between widgets 
-        self.grid.setSpacing(15)
+        #left panel -----------------------------------
+        self.left_panel = QWidget()
+        self.left_panel.setObjectName("left_panel")
+        self.left_layout = QVBoxLayout(self.left_panel) 
+        self.left_layout.setContentsMargins(40, 40, 40, 40)
+        self.left_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        self.left_title = QLabel("Welcome Back!")
+        self.left_title.setStyleSheet("color: white; font-size: 32px; font-weight: bold; background: transparent;")
 
-        #row 0 - title label
-        self.title_label = QLabel("CalorieX Login!")
-        self.title_label.setStyleSheet("font-size: 22px; font-weight: bold; margin-bottom: 10px;")
-        self.grid.addWidget(self.title_label, 0, 0, 1, 2, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.left_desc = QLabel("Please login to your account")
+        self.left_desc.setStyleSheet("color: #ffffff; font-size: 16px; margin-bottom: 30px; background: transparent;")
+        self.left_desc.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        #row 1 - Username setup
-        self.username_label = QLabel("Username:")
-        self.username_input = QLineEdit() 
-        self.username_input.setPlaceholderText("Enter your username")
-        self.grid.addWidget(self.username_label, 1, 0, alignment=Qt.AlignmentFlag.AlignRight)
-        self.grid.addWidget(self.username_input, 1, 1)
+        self.switch_to_login_btn = QPushButton("Sign In")
+        self.switch_to_login_btn.setObjectName("ghost_btn")
 
-        #row 2 - Password setup
-        self.password_label = QLabel("Password:")
+        self.left_layout.addWidget(self.left_title, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.left_layout.addSpacing(20)
+        self.left_layout.addWidget(self.left_desc, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.left_layout.addSpacing(30)
+        self.left_layout.addWidget(self.switch_to_login_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        #right panel -----------------------------------
+        self.right_panel = QWidget()
+        self.right_panel.setObjectName("right_panel")
+        self.right_layout = QVBoxLayout(self.right_panel)
+        self.right_layout.setContentsMargins(50, 40, 40, 40)
+        self.right_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.right_title = QLabel("Create Your Account")
+        self.right_title.setStyleSheet("color: #3aafa9; font-size: 32px; font-weight: bold; background: transparent;")       
+
+        self.social_label = QLabel("Or use your email for registration")
+        self.social_label.setStyleSheet("color: #333333; font-size: 16px; margin-bottom: 30px; background: transparent;")
+
+        self.email_input = QLineEdit()
+        self.email_input.setPlaceholderText("Email")
+
         self.password_input = QLineEdit()
-        self.password_input.setPlaceholderText("Enter your password")
+        self.password_input.setPlaceholderText("Password")
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
-        self.grid.addWidget(self.password_label, 2, 0)
+    
+        
+        self.name_input = QLineEdit()
+        self.name_input.setPlaceholderText("Name")
 
-        self.login_card.setLayout(self.grid)
-        self.grid.addWidget(self.password_input, 2, 1)
-        #row 3 - Login button
-        self.login_button = QPushButton("Login")
-        self.grid.addWidget(self.login_button, 3, 0, 1, 2, alignment=Qt.AlignmentFlag.AlignCenter)
-    #part 6 event pipelines
-        self.login_button.clicked.connect(self.handle_login_attempt)
-    def handle_login_attempt(self):
+        self.email_input = QLineEdit()
+        self.email_input.setPlaceholderText("Email")
+
+        self.password_input = QLineEdit()
+        self.password_input.setPlaceholderText("Password")
+        self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
+
+        self.status_label = QLabel("")
+        self.status_label.setStyleSheet("color: #2b8882; font-size: 12px; font-weight: bold; background: transparent;")
+        self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
 
-        username = self.username_input.text()
+      
+
+        self.signup_btn = QPushButton("Sign Up")
+        self.signup_btn.setObjectName("action_btn")
+
+        self.right_layout.addWidget(self.right_title, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.right_layout.addSpacing(15)
+        self.right_layout.addWidget(self.social_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.right_layout.addSpacing(15)
+
+        self.right_layout.addWidget(self.name_input)
+        self.right_layout.addWidget(self.email_input)
+        self.right_layout.addWidget(self.password_input)
+
+        self.right_layout.addWidget(self.status_label)
+        self.right_layout.addSpacing(15)
+        self.right_layout.addWidget(self.signup_btn, alignment=Qt.AlignmentFlag.AlignCenter) 
+
+        #assemble panels into card
+        self.card_layout.addWidget(self.left_panel, stretch=4)
+        self.card_layout.addWidget(self.right_panel, stretch=6)
+
+        #event pipelines
+        self.signup_btn.clicked.connect(self.handle_registration_attempt)
+        self.switch_to_login_btn.clicked.connect(self.handle_switch_view)
+
+    def handle_registration_attempt(self):
+        name = self.name_input.text()
+        email = self.email_input.text()
         password = self.password_input.text()
 
-        print(f"Username: {username}, Password: {password}")
-
-        if username == "admin" and password == "password":
-            print("Login successful!")
+        #empty field validation (placeholder for actual logic)
+        if not name or not email or not password:
+            self.status_label.setText("Please fill in all fields.")
         else:
-            print("Login failed. Please check your credentials.")
+            self.status_label.setText("Registration successful! (placeholder)")
+        
+        if "@" not in email or "." not in email:
+            self.status_label.setText("Please enter a valid email address.")
+            return
+        
+        self.status_label.setStyleSheet("color: #2b8882; font-size: 12px; font-weight: bold; background: transparent;")
+        self.status_label.setText("Registration successful! (Simulated)")
+        print(f"Registered User -> Name: {name}, Email: {email}, Password: {password}")
+        
+        # TODO: Implement actual database or backend verification logic here
 
-#part 7 main loop
+    def handle_switch_view(self):
+        print("Redirecting user to the Login interface pane...")
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    
+    # Optional: Setting crisp default font rendering for app windows
+    font = QFont("Segoe UI", 10)
+    app.setFont(font)
+    
     login_window = LoginWindow()
     login_window.show()
     sys.exit(app.exec())
-
-#TODO - add error handling for empty fields
-#    - create a registration page
-#     - add password recovery options
-#      - implement actual authentication logic (e.g., check against a database)
